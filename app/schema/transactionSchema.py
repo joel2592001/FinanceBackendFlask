@@ -1,5 +1,5 @@
 
-expenseSchema = {
+transactionSchema = {
     "user_id": {
         "type": "string",
         "required": True,
@@ -33,4 +33,3 @@ expenseSchema = {
         "allowed": ["Income", "Expense"],
     },
 }
-
