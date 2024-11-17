@@ -16,7 +16,6 @@ userSchema = {
         "nullable": False,
         "empty": False,
         "regex": r"\S+", 
-        "format": "email",
     },
     "password": {
         "type": "string",
@@ -46,4 +45,24 @@ userSchema = {
         "required": True,
         "allowed": ["ACTIVE", "INACTIVE"],
     },
+}
+
+loginUserSchema = {
+    "email": {
+        "type": "string",
+        "required": True,
+        "minlength": 3,
+        "nullable": False,
+        "empty": False,
+        "regex": r"\S+", 
+    },
+    "password": {
+        "type": "string",
+        "required": True,
+        "minlength": 3,
+        "nullable": False,
+        "empty": False,
+        "regex": r"\S+", 
+    },
+    
 }

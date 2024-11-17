@@ -1,7 +1,7 @@
 from flask import Blueprint, request, jsonify
 
-from ..schema.userSchema import userSchema
-from ..services.userService import addUser
+from ..schema.userSchema import userSchema, loginUserSchema
+from ..services.userService import addUser, loginUser
 
 from ..services.transactionService import addTransaction, editTransaction, deleteTransaction
 from ..schema.transactionSchema import transactionSchema, updateTransactionSchema, deleteTransactionSchema
@@ -9,6 +9,7 @@ from ..schema.transactionSchema import transactionSchema, updateTransactionSchem
 from ..utils.response import sendResponse
 from ..utils.validation import validate
 from ..utils.asyncHandler import asyncHandler
+from ..utils.jwtUtils import jwt_required
 
 api_blueprint = Blueprint("api", __name__)
 
@@ -26,13 +27,23 @@ def createUser():
 
     return jsonify(response)
 
+@api_blueprint.route('/loginUser', methods=["POST"])
+@asyncHandler
+def signinUser():
+    data = request.json
+    validated_data, errors = validate(data, loginUserSchema)
+    if errors:
+        return sendResponse(status="error", message="Validation failed", error=errors)
 
+    response = loginUser(validated_data)
 
+    return jsonify(response)
 
 
 # Transaction API
 @api_blueprint.route('/addTransaction', methods=["POST"])
 @asyncHandler
+@jwt_required
 def createTransaction():
     data = request.json
 
@@ -47,6 +58,7 @@ def createTransaction():
 
 @api_blueprint.route('/editTransaction', methods=["POST"])
 @asyncHandler
+@jwt_required
 def updateExpense():
     data = request.json
     print(data, "data")
@@ -61,6 +73,7 @@ def updateExpense():
 
 @api_blueprint.route('/deleteTransaction', methods=["POST"])
 @asyncHandler
+@jwt_required
 def removeExpense():
     data = request.json
     

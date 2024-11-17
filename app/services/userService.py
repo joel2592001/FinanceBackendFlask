@@ -3,6 +3,8 @@ import os
 from ..utils.response import sendResponse
 from datetime import datetime
 import time
+from bcrypt import hashpw, gensalt, checkpw
+from ..utils.jwtUtils import generate_jwt_token
 
 client = MongoClient(os.getenv("MONGODB_URI"))
 db = client["personalFinance"]
@@ -12,14 +14,25 @@ userCollection = db["users"]
 
 def addUser(data):
 
+    user_email = data.get("email").strip().lower()
+
+    existing_user = userCollection.find_one({"email": user_email})
+    if existing_user:
+        return sendResponse(status="error", message="Email already exists!")
+
     epoch_time = int(time.time())
     user_id = f"USE{epoch_time}"
+
+    plain_password = data.get("password")
+    hashed_password = hashpw(plain_password.encode(
+        "utf-8"), gensalt()).decode("utf-8")
+    print("hashed_password::", hashed_password)
 
     user_data = {
         "userId": user_id,
         "name": data.get("name"),
-        "email": data.get("email"),
-        "password": data.get("password"),
+        "email": user_email,
+        "password": hashed_password,
         "age": data.get("age"),
         "salary": data.get("salary"),
         "savings": data.get("savings"),
@@ -33,3 +46,23 @@ def addUser(data):
         return sendResponse(status="success", message="User added successfully!")
     else:
         return sendResponse(status="error", message="Failed to add user!")
+
+
+def loginUser(data):
+    print("login data inside the service::", data)
+
+    user_email = data.get("email").strip().lower()
+    plain_password = data.get("password")
+
+    user = userCollection.find_one({"email": user_email})
+
+    if not user:
+        return sendResponse(status="error", message="Invalid email or password!")
+
+    if not checkpw(plain_password.encode("utf-8"), user["password"].encode("utf-8")):
+        return sendResponse(status="error", message="Invalid email or password!")
+
+    token = generate_jwt_token(user["userId"])
+    print("token::", token)
+
+    return sendResponse(status="success", message="Login successful!", data={"token": token, "userId": user["userId"], "name": user["name"]})

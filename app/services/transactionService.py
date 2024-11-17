@@ -56,7 +56,7 @@ def editTransaction(data):
     )
     
     if result.modified_count == 0:
-        return sendResponse(status="error", message="Failed to edit transactions!")
+        return sendResponse(status="error", message="Transactions not found!")
     else:
         return sendResponse(status="success", message="Transactions edited successfully!")
 
