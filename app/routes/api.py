@@ -1,10 +1,14 @@
 from flask import Blueprint, request, jsonify
 
-from ..schema.userSchema import userSchema, loginUserSchema
 from ..services.userService import addUser, loginUser
+from ..schema.userSchema import userSchema, loginUserSchema
 
 from ..services.transactionService import addTransaction, editTransaction, deleteTransaction
 from ..schema.transactionSchema import transactionSchema, updateTransactionSchema, deleteTransactionSchema
+
+from ..services.goalService import addGoal
+from ..schema.goalSchema import addFinancialGoalSchema
+
 
 from ..utils.response import sendResponse
 from ..utils.validation import validate
@@ -39,7 +43,6 @@ def signinUser():
 
     return jsonify(response)
 
-
 # Transaction API
 @api_blueprint.route('/addTransaction', methods=["POST"])
 @asyncHandler
@@ -55,7 +58,6 @@ def createTransaction():
 
     return jsonify(response)
 
-
 @api_blueprint.route('/editTransaction', methods=["POST"])
 @asyncHandler
 @jwt_required
@@ -70,7 +72,6 @@ def updateExpense():
 
     return jsonify(response)
 
-
 @api_blueprint.route('/deleteTransaction', methods=["POST"])
 @asyncHandler
 @jwt_required
@@ -82,5 +83,21 @@ def removeExpense():
         return sendResponse(status="error", message="Validation failed", error=errors)
 
     response = deleteTransaction(validated_data)
+
+    return jsonify(response)
+
+
+# Financial Goal API
+@api_blueprint.route('/addGoal', methods=["POST"])
+@asyncHandler
+# @jwt_required
+def createGoal():
+    data = request.json
+
+    validated_data, errors = validate(data, addFinancialGoalSchema)
+    if errors:
+        return sendResponse(status="error", message="Validation failed", error=errors)
+
+    response = addGoal(validated_data)
 
     return jsonify(response)

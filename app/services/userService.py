@@ -31,6 +31,7 @@ def addUser(data):
     user_data = {
         "userId": user_id,
         "name": data.get("name"),
+        "financialGoal": [],
         "email": user_email,
         "password": hashed_password,
         "age": data.get("age"),

@@ -6,7 +6,7 @@ transactionSchema = {
         "minlength": 3,
         "nullable": False,
         "empty": False,
-        "regex": r"\S+", 
+        # "regex": r"\S+", 
     },
     "amount": {
         "type": "float",
@@ -41,7 +41,7 @@ updateTransactionSchema = {
         "minlength": 3,
         "nullable": False,
         "empty": False,
-        "regex": r"\S+", 
+        # "regex": r"\S+", 
     },
     "transactionId": {
         "type": "string",
@@ -49,7 +49,7 @@ updateTransactionSchema = {
         "minlength": 3,
         "nullable": False,
         "empty": False,
-        "regex": r"\S+", 
+        # "regex": r"\S+", 
     },
     "amount": {
         "type": "float",
@@ -84,7 +84,7 @@ deleteTransactionSchema = {
         "minlength": 3,
         "nullable": False,
         "empty": False,
-        "regex": r"\S+", 
+        # "regex": r"\S+", 
     },
     "transactionId": {
         "type": "string",
@@ -92,6 +92,6 @@ deleteTransactionSchema = {
         "minlength": 3,
         "nullable": False,
         "empty": False,
-        "regex": r"\S+", 
+        # "regex": r"\S+", 
     },
 }

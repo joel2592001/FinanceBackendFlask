@@ -6,7 +6,7 @@ userSchema = {
         "minlength": 3,
         "nullable": False,
         "empty": False,
-        "regex": r"\S+", 
+        # "regex": r"\S+", 
         
     },
     "email": {
@@ -15,7 +15,7 @@ userSchema = {
         "minlength": 3,
         "nullable": False,
         "empty": False,
-        "regex": r"\S+", 
+        # "regex": r"\S+", 
     },
     "password": {
         "type": "string",
@@ -23,7 +23,7 @@ userSchema = {
         "minlength": 3,
         "nullable": False,
         "empty": False,
-        "regex": r"\S+", 
+        # "regex": r"\S+", 
     },
     "age": {
         "type": "integer",
@@ -54,7 +54,7 @@ loginUserSchema = {
         "minlength": 3,
         "nullable": False,
         "empty": False,
-        "regex": r"\S+", 
+        # "regex": r"\S+", 
     },
     "password": {
         "type": "string",
@@ -62,7 +62,7 @@ loginUserSchema = {
         "minlength": 3,
         "nullable": False,
         "empty": False,
-        "regex": r"\S+", 
+        # "regex": r"\S+", 
     },
     
 }
