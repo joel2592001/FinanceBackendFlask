@@ -48,3 +48,38 @@ def addGoal(data):
         return sendResponse(status="success", message="Goal added successfully!")
     else:
         return sendResponse(status="error", message="Goal already exists or failed to add!")
+
+
+def editGoal(data):
+
+    update_fields = {f"financialGoal.$.{key}": value for key,
+                     value in data.items() if key != "userId" and key != "goalId"}
+    update_fields["updatedDate"] = datetime.now()
+
+    result = userCollection.update_one(
+        {"userId": data["userId"], "financialGoal.goalId": data["goalId"]},
+        {"$set": update_fields}
+    )
+
+    if result.matched_count == 0:
+        return sendResponse(status="error", message="Goal not found or user does not exist!")
+    elif result.modified_count == 0:
+        return sendResponse(status="error", message="No changes were made to the goal!")
+    else:
+        return sendResponse(status="success", message="Goal updated successfully!")
+
+
+def deleteGoal(data):
+
+    user_id = data.get("userId")
+    goal_id = data.get("goalId")
+
+    result = userCollection.update_one(
+        {"userId": user_id, "financialGoal.goalId": goal_id},
+        {"$pull": {"financialGoal": {"goalId": goal_id}}}
+    )
+
+    if result.modified_count > 0:
+        return sendResponse(status="success", message="Goal deleted successfully!")
+    else:
+        return sendResponse(status="error", message="Goal not found or could not be deleted.")

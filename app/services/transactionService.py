@@ -55,8 +55,10 @@ def editTransaction(data):
         {"$set": expense_data} 
     )
     
-    if result.modified_count == 0:
-        return sendResponse(status="error", message="Transactions not found!")
+    if result.matched_count == 0:
+        return sendResponse(status="error", message="Transaction not found or user does not exist!")
+    elif result.modified_count == 0:
+        return sendResponse(status="error", message="No changes made!")
     else:
         return sendResponse(status="success", message="Transactions edited successfully!")
 

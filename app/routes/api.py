@@ -6,8 +6,8 @@ from ..schema.userSchema import userSchema, loginUserSchema
 from ..services.transactionService import addTransaction, editTransaction, deleteTransaction
 from ..schema.transactionSchema import transactionSchema, updateTransactionSchema, deleteTransactionSchema
 
-from ..services.goalService import addGoal
-from ..schema.goalSchema import addFinancialGoalSchema
+from ..services.goalService import addGoal,editGoal, deleteGoal
+from ..schema.goalSchema import addFinancialGoalSchema, updateFinancialGoalSchema, deleteFinancialGoalSchema
 
 
 from ..utils.response import sendResponse
@@ -90,7 +90,7 @@ def removeExpense():
 # Financial Goal API
 @api_blueprint.route('/addGoal', methods=["POST"])
 @asyncHandler
-# @jwt_required
+@jwt_required
 def createGoal():
     data = request.json
 
@@ -99,5 +99,31 @@ def createGoal():
         return sendResponse(status="error", message="Validation failed", error=errors)
 
     response = addGoal(validated_data)
+
+    return jsonify(response)
+
+@api_blueprint.route('/editGoal', methods=["POST"])
+@asyncHandler
+@jwt_required
+def updateGoal():
+    data = request.json
+    validated_data, errors = validate(data, updateFinancialGoalSchema)
+    if errors:
+        return sendResponse(status="error", message="Validation failed", error=errors)
+
+    response = editGoal(validated_data)
+
+    return jsonify(response)
+
+@api_blueprint.route('/deleteGoal', methods=["POST"])
+@asyncHandler
+@jwt_required
+def removeGoal():
+    data = request.json
+    validated_data, errors = validate(data, deleteFinancialGoalSchema)
+    if errors:
+        return sendResponse(status="error", message="Validation failed", error=errors)
+
+    response = deleteGoal(validated_data)
 
     return jsonify(response)
