@@ -54,12 +54,20 @@ def editGoal(data):
 
     update_fields = {f"financialGoal.$.{key}": value for key,
                      value in data.items() if key != "userId" and key != "goalId"}
-    update_fields["updatedDate"] = datetime.now()
+    
+    update_fields["financialGoal.$.updatedDate"] = datetime.now()
+    
+    if len(update_fields) <= 1:  
+        return sendResponse(status="error", message="At least one field must be updated!")
+    
+    print("update_fields::", update_fields)
 
     result = userCollection.update_one(
         {"userId": data["userId"], "financialGoal.goalId": data["goalId"]},
         {"$set": update_fields}
     )
+
+    print("result::", result.matched_count, result.modified_count)
 
     if result.matched_count == 0:
         return sendResponse(status="error", message="Goal not found or user does not exist!")

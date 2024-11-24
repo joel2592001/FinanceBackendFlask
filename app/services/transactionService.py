@@ -37,18 +37,18 @@ def addTransaction(data):
 
 def editTransaction(data):
 
-    expense_data = {}
-
-    if "amount" in data:
-        expense_data["amount"] = float(data["amount"])
-    if "category" in data:
-        expense_data["category"] = data["category"]
-    if "description" in data:
-        expense_data["description"] = data["description"] or "No description"
-    if "type" in data:
-        expense_data["type"] = data["type"]
-
+    expense_data = {
+        key: value
+        for key, value in data.items()
+        if key in ["amount", "category", "description", "type"]
+    }
+    
     expense_data["updatedDate"] = datetime.now()
+    
+    
+    if len(expense_data) <= 1:  
+        return sendResponse(status="error", message="At least one field must be updated!")
+
     
     result = transactionCollection.update_one(
         {"userId": data["userId"],"transactionId": data["transactionId"]},  

@@ -66,3 +66,22 @@ loginUserSchema = {
     },
     
 }
+
+userQuerySchema = {
+    "userId": {
+        "type": "string",
+        "required": True,
+        "minlength": 3,
+        "nullable": False,
+        "empty": False,
+        # "regex": r"\S+", 
+    },
+    "query":{
+        "type": "string",
+        "required": True,
+        "minlength": 3,
+        "nullable": False,
+        "empty": False,
+        # "regex": r"\S+",
+    }
+}

@@ -5,11 +5,13 @@ from datetime import datetime
 import time
 from bcrypt import hashpw, gensalt, checkpw
 from ..utils.jwtUtils import generate_jwt_token
+from ..utils.createEmbedding import create_embedding
 
 client = MongoClient(os.getenv("MONGODB_URI"))
 db = client["personalFinance"]
 
 userCollection = db["users"]
+queryCollection = db["chatQuestions"]
 
 
 def addUser(data):
@@ -67,3 +69,29 @@ def loginUser(data):
     print("token::", token)
 
     return sendResponse(status="success", message="Login successful!", data={"token": token, "userId": user["userId"], "name": user["name"]})
+
+
+def userQuery(data):
+
+    userQuery = data.get("query")
+
+    query_embedding = create_embedding(userQuery).tolist()
+    
+    # print("query_embedding::", query_embedding)
+
+    results = queryCollection.aggregate([
+        {
+            "$vectorSearch": {
+                "queryVector": query_embedding,  
+                "path": "embedding",                       
+                "numCandidates": 10,                      
+                "limit": 3,                                
+                "index": "financeAI"
+            }
+        }
+    ])
+
+    for result in results:
+        print("result::", result["question"], )
+
+

@@ -1,14 +1,13 @@
 from flask import Blueprint, request, jsonify
 
-from ..services.userService import addUser, loginUser
-from ..schema.userSchema import userSchema, loginUserSchema
+from ..services.userService import addUser, loginUser, userQuery
+from ..schema.userSchema import userSchema, loginUserSchema,userQuerySchema
 
 from ..services.transactionService import addTransaction, editTransaction, deleteTransaction
 from ..schema.transactionSchema import transactionSchema, updateTransactionSchema, deleteTransactionSchema
 
 from ..services.goalService import addGoal,editGoal, deleteGoal
 from ..schema.goalSchema import addFinancialGoalSchema, updateFinancialGoalSchema, deleteFinancialGoalSchema
-
 
 from ..utils.response import sendResponse
 from ..utils.validation import validate
@@ -42,6 +41,19 @@ def signinUser():
     response = loginUser(validated_data)
 
     return jsonify(response)
+
+@api_blueprint.route('/chatQuery', methods=["POST"])
+@asyncHandler
+def chatQuery():
+    data = request.json
+    validated_data, errors = validate(data, userQuerySchema)
+    if errors:
+        return sendResponse(status="error", message="Validation failed", error=errors)
+
+    response = userQuery(validated_data)
+
+    return jsonify(response)
+
 
 # Transaction API
 @api_blueprint.route('/addTransaction', methods=["POST"])
